@@ -7,23 +7,28 @@ import gradient_descent
 
 w = 2
 b = 10
-x = np.arange(0.0, 20, 1.0)
-noise = np.random.normal(0, 1, x.shape)
+x = np.arange(0.0, 100, 1)
+noise = np.random.normal(1, 10, x.shape)
 y0 = w*x + b
 y = y0 + noise
 
 epochs = 1000
-new_weight = 5
-new_bias = 1
+new_weight = 5.0
+new_bias = 1.0
 
-for i in range(1000):
-    new_weight, new_bias = gradient_descent.adjust_weights(x,y,new_weight,new_bias)    
+from sklearn import preprocessing
+# normalize the data attributes
+normalized_X = preprocessing.normalize([x])
+normalized_X = normalized_X[0]
 
-print(new_weight, new_bias)
-print(gradient_descent.get_cost(x,y,new_weight,new_bias))
+for epoch in range(epochs):
+    new_weight, new_bias = gradient_descent.adjust_weights(normalized_X,y,new_weight,new_bias)    
+
+print(new_weight,new_bias)
+print(gradient_descent.get_cost(normalized_X,y,new_weight,new_bias))
 print(gradient_descent.get_cost(x,y,w,b))
 
-predicted_Y = new_weight*x + new_bias
+predicted_Y = new_weight*normalized_X + new_bias
 
 plt.scatter(x, y)
 plt.plot(x, y0)

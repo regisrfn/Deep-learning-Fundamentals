@@ -11,17 +11,15 @@ def get_cost(x, y, w = 0.5, bias = 0.0):
 
     return cost/(2*m)
 
-def adjust_weights(x,y, w = 0.0, b = 0.0, learning_rate = 0.01):
-    weight = 0.0
-    bias = 0.0
+def adjust_weights(x,y, w = 0.0, b = 0.0, learning_rate = 0.1):
+    size = x.size
 
-    m = x.size
-    for i in range (m):
-        weight += -x[i]*(y[i] - (w*x[i]+b))
-        bias += -(y[i] - (w*x[i]+b))
+    # derivative
+    dw = -x*(y- (w*x+b))/size
+    db = -(y- (w*x+b))/size
 
-    derivative_of_weigth = weight/m
-    derivative_of_bias = bias/m
+    derivative_of_weigth = dw.sum(axis=0)
+    derivative_of_bias = db.sum(axis=0)
 
     new_weight = w - learning_rate * derivative_of_weigth
     new_bias = b - learning_rate * derivative_of_bias
