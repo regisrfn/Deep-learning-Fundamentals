@@ -34,3 +34,5 @@ def adjust_weights(x,y, w, b=0, learning_rate = 0.01):
     return (weights, bias)
 
 
+def sigmoid(x):
+  return 1 / (1 + np.exp(-x))

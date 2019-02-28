@@ -33,7 +33,7 @@ for epoch in range(1000):
 # print(new_weight,new_bias)
 print(f'loss:{gradient_descent.get_cost(x_test,y_test,new_weight,new_bias)}')
 
-# predicted_y = np.dot(x_test,new_weight) + new_bias
-# plt.scatter(x_test[:, 1], y_test)
-# plt.plot(x_test[:, 1], predicted_y)
-# plt.show()
+predicted_y = np.dot(x_test,new_weight) + new_bias
+plt.scatter(x_test[:, 1], y_test)
+plt.scatter(x_test[:, 1], predicted_y)
+plt.show()
