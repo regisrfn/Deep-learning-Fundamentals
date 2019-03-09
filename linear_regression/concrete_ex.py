@@ -23,17 +23,20 @@ x_test = sc.transform(x_test)
 
 
 epochs = 1000
-new_weight = np.zeros((x_train.shape[1], 1))
-new_bias = 1.0
+bias = np.ones(shape=(len(x_train),1))
+x_train = np.append(bias, x_train, axis=1)
+bias = np.ones(shape=(len(x_test),1))
+x_test = np.append(bias, x_test, axis=1)
+weights = np.zeros((x_train.shape[1], 1))
 
 for epoch in range(1000):
-    new_weight, new_bias = gradient_descent.adjust_weights(x_train,y_train,new_weight, new_bias)
+    weights = gradient_descent.adjust_weights(x_train,y_train,weights)
 
 
 # print(new_weight,new_bias)
-print(f'loss:{gradient_descent.get_cost(x_test,y_test,new_weight,new_bias)}')
+print(f'loss:{gradient_descent.get_cost(x_test,y_test,weights)}')
 
-predicted_y = np.dot(x_test,new_weight) + new_bias
+predicted_y = np.dot(x_test,weights)
 plt.scatter(x_test[:, 1], y_test)
 plt.scatter(x_test[:, 1], predicted_y)
 plt.show()

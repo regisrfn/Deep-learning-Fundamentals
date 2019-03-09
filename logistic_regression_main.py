@@ -32,7 +32,7 @@ x_test = np.append(bias, x_test, axis=1)
 weights = np.zeros((x_train.shape[1], 1))
 
 for epoch in range(1000):
-    weights = classification.update_weights(x_train,y_train,weights)
+    weights = classification.update_weights(x_train,y_train,weights,learning_rate=0.001)
 
 
 print(weights)
