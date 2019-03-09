@@ -21,26 +21,23 @@ y0 = np.dot(x,w) + b
 noise = np.random.normal(1, 1, y0.shape)
 y = y0 + noise
 
-epochs = 1000
-new_weight = np.array([
-    [0],
-    [0]
-])
-new_bias = 1.0
-
 # Feature Scaling
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
-x_scaled = sc.fit_transform(x)
+x_train = sc.fit_transform(x)
 
+epochs = 1000
+bias = np.ones(shape=(len(x_train),1))
+x_train = np.append(bias, x_train, axis=1)
+weights = np.zeros((x_train.shape[1], 1))
 
 for epoch in range(epochs):
-    new_weight, new_bias = gradient_descent.adjust_weights(x_scaled,y,new_weight, new_bias)    
+    weights = gradient_descent.adjust_weights(x_train,y,weights)    
 
-print(gradient_descent.get_cost(x_scaled,y,new_weight,new_bias))
-print(gradient_descent.get_cost(x,y,w,b))
+print(gradient_descent.get_cost(x_train,y,weights))
+print(gradient_descent.get_cost(x,y-b,w))
 
-predicted_Y = np.dot(x_scaled,new_weight) + new_bias
+predicted_Y = np.dot(x_train,weights)
 
 plt.scatter(x1, y)
 plt.plot(x1, y0)
