@@ -21,20 +21,17 @@ def cost_function(x, y, weights):
 
 def update_weights(x,y, w,learning_rate = 0.01):
     N = len(x)
+    
+    # derivative
+    predictions = predict(x,w)
+    
+    gradient = np.dot(x.T, predictions-y)
 
-    for category in range(y.shape[1]):
-      label = y[:,category]
-      label = np.array(label, ndmin=2).T
-      # derivative
-      predictions = predict(x,w)
-      
-      gradient = np.dot(x.T, predictions-label)
-  
-      gradient /= N
-  
-      gradient *= learning_rate
-  
-      weights = w - gradient
+    gradient /= N
+
+    gradient *= learning_rate
+
+    weights = w - gradient
 
     return (weights)
 
