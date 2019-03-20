@@ -1,4 +1,7 @@
 # Importing the libraries
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -12,11 +15,10 @@ Y = dataset.iloc[:, 4].values
 Y = np.array(Y, ndmin=2).T
 
 # Splitting the dataset into the Training set and Test set
-from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.25, random_state = 0)
+x_train, x_test, y_train, y_test = train_test_split(
+    X, Y, test_size=0.25, random_state=0)
 
 # Feature Scaling
-from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
@@ -24,23 +26,23 @@ x_test = sc.transform(x_test)
 
 epochs = 1000
 
-bias = np.ones(shape=(len(x_train),1))
+bias = np.ones(shape=(len(x_train), 1))
 x_train = np.append(bias, x_train, axis=1)
-bias = np.ones(shape=(len(x_test),1))
+bias = np.ones(shape=(len(x_test), 1))
 x_test = np.append(bias, x_test, axis=1)
 weights = np.zeros((x_train.shape[1], y_train.shape[1]))
 
-for epoch in range(1000):
-    weights = classification.update_weights(x_train,y_train,weights,learning_rate=0.001)
+for epoch in range(epochs):
+    weights = classification.update_weights(
+        x_train, y_train, weights, learning_rate=0.001)
 
 
-print(weights)
+print(weights.shape)
 
-predicted_y = classification.predict(x_test,w=weights)
+predicted_y = classification.predict(x_test, w=weights)
 predicted_y = np.round(predicted_y)
 
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test,predicted_y)
+cm = confusion_matrix(y_test, predicted_y)
 print(cm)
 print(f'accuracy:{classification.accuracy(predicted_y,y_test)}')
 
