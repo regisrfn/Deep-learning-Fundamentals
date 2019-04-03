@@ -43,7 +43,7 @@ nn = classification.NeuralNetwork(X_train,y_train)
 epochs = 5000
 for epoch in range(epochs):
     nn.feedforward()
-    nn.backprop()
+    nn.backprop(learning_rate=0.5)
     print(f"epoch {epoch}/{epochs}")
     predicted_y = nn.predict(X_test)
     predicted_y = predicted_y.argmax(axis=1)
