@@ -39,6 +39,7 @@ def classification_model():
     model = Sequential()
     model.add(Dense(num_pixels, activation='relu', input_shape=(num_pixels,)))
     model.add(Dense(100, activation='relu'))
+    model.add(Dense(10, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
     
     

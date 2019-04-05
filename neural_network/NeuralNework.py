@@ -1,5 +1,5 @@
 import numpy as np
-
+from neural_network.layer import Layer
 
 def sigmoid(x):
     return 1.0/(1 + np.exp(-x))
@@ -13,53 +13,51 @@ class NeuralNetwork:
     def __init__(self, x, y):
         self.y = y
         self.x = x
-
-        self.w1 = np.random.randn(self.x.shape[1], 10)
-        self.b1 = np.zeros((1, self.w1.shape[1]))
-        
-        self.w2 = np.random.randn(10, self.y.shape[1])
-        self.b2 = np.zeros((1, self.w2.shape[1]))
+        self.layers = []
 
     def feedforward(self):
-        self.a1 = sigmoid(np.dot(self.x, self.w1) + self.b1)
-        self.a2 = sigmoid(np.dot(self.a1, self.w2) + self.b2)
+        x = self.x
+        for index , layer in enumerate(self.layers):
+            y = sigmoid(np.dot(x, layer.w) + layer.b)
+            x = y
+            self.layers[index].a = y
 
-
-    def backprop(self,learning_rate=0.1):
+    def backprop(self, learning_rate=0.1):
         N = len(self.x)
-        
+        num_layers = len(self.layers)
+
         # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
 
-        # DE/dw2 = DE/Da2 * Da2/Dz2 * Dz2/Dw2
-        # DE/dw1 = DE/Da2 * Da2/Dz2 * Dz2/Da2 *Da1/Dz1 * Dz1/Dw1
-        
-        # DE/Dz2 = (a2 - y)
-        DE_dz2 = (self.a2 - self.y)
-        DE_dz1 = np.dot(DE_dz2,self.w2.T) * sigmoid_derivative(self.a1)
+        a_delta = (self.layers[-1].a - self.y)  # w2
 
-        # DE/Da2 * Da2/Dz2 * Dz2/Dw2
-        d_weights2 = np.dot(self.a2.T,DE_dz2)
-        d_bias2 = np.sum(DE_dz2,axis=0)
-        d_weights1 = np.dot(self.x.T,DE_dz1)
-        d_bias1 = np.sum(DE_dz1,axis=0)
+        for i in reversed(range(num_layers)):
 
-        d_weights2 /= N
-        d_weights2 *= learning_rate
-        d_bias2 /= N
-        d_bias2 *= learning_rate
-        d_weights1 /= N
-        d_weights1 *= learning_rate
-        d_bias1 /= N
-        d_bias1 *= learning_rate
+            if (i-1) < 0:
+                a_layer_before = self.x.T
+            else:
+                a_layer_before = self.layers[i-1].a.T
+
+            if(i != num_layers-1):
+                z_delta = np.dot(a_delta, self.layers[i+1].w.T)
+                a_delta = z_delta * sigmoid_derivative(self.layers[i].a)  # w
+
+            self.layers[i].w -= learning_rate * np.dot(a_layer_before, a_delta)/N
+            self.layers[i].b -= np.sum(a_delta, axis=0)/N
 
 
-        self.w2 -= d_weights2
-        self.b2 -= d_bias2
-        self.w1 -= d_weights1
-        self.b1 -= d_bias1
+    def predict(self, x_test):
+        x = x_test
+        for layer in (self.layers):
+            y = sigmoid(np.dot(x, layer.w) + layer.b)
+            x = y
+        return y
 
-    
-    def predict(self,x_test):
-        a1 = sigmoid(np.dot(x_test, self.w1) + self.b1)
-        a2 = sigmoid(np.dot(a1, self.w2) + self.b2)
-        return a2
+    def add_layer(self,size,input_size=0):
+        if (input_size != 0):
+            last_layer_size = input_size
+            new_layer = Layer(input_size=last_layer_size, outputsize=size)
+            self.layers.append(new_layer)
+        else:
+            last_layer_size = self.layers[-1].w.shape[1]
+            new_layer = Layer(input_size=last_layer_size, outputsize=size)
+            self.layers.append(new_layer)

@@ -39,12 +39,15 @@ num_classes = y_train.shape[1]
 num_features = num_pixels
 
 nn = classification.NeuralNetwork(X_train,y_train)
+nn.add_layer(size=10,input_size=num_pixels)
+nn.add_layer(size=10)
+nn.add_layer(size=num_classes)
 
 epochs = 5000
 for epoch in range(epochs):
     nn.feedforward()
     nn.backprop(learning_rate=0.5)
-    print(f"epoch {epoch}/{epochs}")
+    print(f"epoch {epoch+1}/{epochs}")
     predicted_y = nn.predict(X_test)
     predicted_y = predicted_y.argmax(axis=1)
     print(f"accuracy: {np.mean(predicted_y == y_test)}")
